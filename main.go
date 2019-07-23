@@ -33,6 +33,8 @@ var (
 	ErrInvalidSignature  = errors.New("nkeys: signature verification failed")
 	ErrCannotSign        = errors.New("nkeys: can not sign, no private key available")
 	ErrPublicKeyOnly     = errors.New("nkeys: no seed or private key available")
+	ErrCannotDecrypt     = errors.New("nkeys: can not decrypt, no private key available")
+	ErrCannotConvert     = errors.New("nkeys: can not convert ed25519 public key to curve25519")
 )
 
 // KeyPair provides the central interface to nkeys.
@@ -43,6 +45,10 @@ type KeyPair interface {
 	Sign(input []byte) ([]byte, error)
 	Verify(input []byte, sig []byte) error
 	Wipe()
+
+	// ECIES - https://en.wikipedia.org/wiki/Integrated_Encryption_Scheme
+	Encrypt(plainText []byte) ([]byte, error)
+	Decrypt(cipherText []byte) ([]byte, error)
 }
 
 // CreateUser will create a User typed KeyPair.

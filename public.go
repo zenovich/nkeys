@@ -17,6 +17,7 @@ import (
 	"crypto/rand"
 	"io"
 
+	"github.com/agl/ed25519/extra25519"
 	"golang.org/x/crypto/ed25519"
 )
 
@@ -57,6 +58,23 @@ func (p *pub) Verify(input []byte, sig []byte) error {
 		return ErrInvalidSignature
 	}
 	return nil
+}
+
+// Encrypt will perform ECIES encryption.
+// Only the possesor of the private key will be able to decrypt.
+func (p *pub) Encrypt(plainText []byte) ([]byte, error) {
+	// Convert ed25519 to curve25519 if first time.
+	var pck, pub [32]byte
+	copy(pub[:], p.pub)
+	if !extra25519.PublicKeyToCurve25519(&pck, &pub) {
+		return nil, ErrCannotConvert
+	}
+	return eciesEncrypt(plainText, pck[:])
+}
+
+// Decrypt will decrypt the ciphertext iff we possess the correct private key.
+func (p *pub) Decrypt([]byte) ([]byte, error) {
+	return nil, ErrCannotDecrypt
 }
 
 // Wipe will randomize the public key and erase the pre byte.
