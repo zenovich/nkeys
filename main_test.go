@@ -174,9 +174,9 @@ func TestAccount(t *testing.T) {
 	if err != nil {
 		t.Fatalf("Unexpected error signing from account: %v", err)
 	}
-	if len(sig) != 65 {
+	if len(sig) != 64 {
 		t.Fatalf("Expected signature size of %d but got %d",
-			65, len(sig))
+			64, len(sig))
 	}
 	err = account.Verify(data, sig)
 	if err != nil {

@@ -115,7 +115,11 @@ func (pair *kp) Sign(input []byte) ([]byte, error) {
 	if err != nil {
 		return nil, err
 	}
-	return secp256k1.Sign(crypto.Keccak256(input), priv)
+	sign, err := secp256k1.Sign(crypto.Keccak256(input), priv)
+	if err != nil {
+		return nil, err
+	}
+	return sign[:64], nil
 }
 
 // Verify will verify the input against a signature utilizing the public key.
@@ -124,7 +128,7 @@ func (pair *kp) Verify(input []byte, sig []byte) error {
 	if err != nil {
 		return err
 	}
-	if !secp256k1.VerifySignature(pub, crypto.Keccak256(input), sig[:64]) {
+	if !secp256k1.VerifySignature(pub, crypto.Keccak256(input), sig) {
 		return ErrInvalidSignature
 	}
 	return nil
