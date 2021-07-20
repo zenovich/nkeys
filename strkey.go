@@ -17,7 +17,6 @@ import (
 	"bytes"
 	"encoding/base32"
 	"encoding/binary"
-	"golang.org/x/crypto/ed25519"
 )
 
 // PrefixByte is a lead byte representing the type.
@@ -88,7 +87,7 @@ func EncodeSeed(public PrefixByte, src []byte) ([]byte, error) {
 		return nil, err
 	}
 
-	if len(src) != ed25519.SeedSize {
+	if len(src) != seedLength {
 		return nil, ErrInvalidSeedLen
 	}
 

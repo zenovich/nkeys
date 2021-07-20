@@ -21,8 +21,6 @@ import (
 	"os"
 	"regexp"
 	"testing"
-
-	"golang.org/x/crypto/ed25519"
 )
 
 func TestVersion(t *testing.T) {
@@ -107,7 +105,7 @@ func TestSeed(t *testing.T) {
 		t.Fatalf("Did not receive ErrInvalidPrefixByte error, received %v", err)
 	}
 
-	var rawSeed [ed25519.SeedSize]byte
+	var rawSeed [40]byte
 
 	_, err = io.ReadFull(rand.Reader, rawSeed[:])
 	if err != nil {
@@ -176,9 +174,9 @@ func TestAccount(t *testing.T) {
 	if err != nil {
 		t.Fatalf("Unexpected error signing from account: %v", err)
 	}
-	if len(sig) != ed25519.SignatureSize {
+	if len(sig) != 65 {
 		t.Fatalf("Expected signature size of %d but got %d",
-			ed25519.SignatureSize, len(sig))
+			65, len(sig))
 	}
 	err = account.Verify(data, sig)
 	if err != nil {

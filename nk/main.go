@@ -221,7 +221,7 @@ func genKeyPair(pre nkeys.PrefixByte, entropy string) nkeys.KeyPair {
 	}
 
 	// Create raw seed from source or random.
-	var rawSeed [32]byte
+	var rawSeed [40]byte
 	_, err := io.ReadFull(ef, rawSeed[:]) // Or some other random source.
 	if err != nil {
 		log.Fatalf("Error reading from %s: %v", ef, err)
