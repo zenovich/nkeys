@@ -82,10 +82,10 @@ func TestDecode(t *testing.T) {
 
 	decoded, err := Decode(PrefixByteUser, str)
 	if err != nil {
-		t.Fatalf("Unexpected error from Decode: %v", err)
+		t.Fatalf("Unexpected error from Decode: %v, encoded string=%s\n", err, str)
 	}
 	if !bytes.Equal(decoded, rawKey[:]) {
-		t.Fatalf("Decoded does not match the original")
+		t.Fatalf("Decoded does not match the original: decoded=%s, original=%s", decoded, rawKey[:])
 	}
 }
 
@@ -126,7 +126,7 @@ func TestSeed(t *testing.T) {
 			PrefixByteUser, pre)
 	}
 	if !bytes.Equal(decoded, rawSeed[:]) {
-		t.Fatalf("Decoded seed does not match the original")
+		t.Fatalf("Decoded seed does not match the original: decoded=%s, original=%s", decoded, rawSeed[:])
 	}
 }
 
@@ -144,7 +144,7 @@ func TestAccount(t *testing.T) {
 	}
 	_, err = Decode(PrefixByteSeed, seed)
 	if err != nil {
-		t.Fatalf("Expected a proper seed string, got %s", seed)
+		t.Fatalf("Expected a proper seed string, got %s, error: %v", seed, err)
 	}
 
 	// Check Public
@@ -152,8 +152,8 @@ func TestAccount(t *testing.T) {
 	if err != nil {
 		t.Fatalf("Received an error retrieving public key: %v", err)
 	}
-	if public[0] != 'A' {
-		t.Fatalf("Expected a prefix of 'A' but got %c", public[0])
+	if public[0] != 'a' {
+		t.Fatalf("Expected a prefix of 'a' but got %c", public[0])
 	}
 	if !IsValidPublicAccountKey(public) {
 		t.Fatalf("Not a valid public account key")
@@ -164,8 +164,8 @@ func TestAccount(t *testing.T) {
 	if err != nil {
 		t.Fatalf("Received an error retrieving private key: %v", err)
 	}
-	if private[0] != 'P' {
-		t.Fatalf("Expected a prefix of 'P' but got %v", private[0])
+	if private[0] != '1' {
+		t.Fatalf("Expected a prefix of '1' but got %v", private[0])
 	}
 
 	// Check Sign and Verify
@@ -198,8 +198,8 @@ func TestUser(t *testing.T) {
 	if err != nil {
 		t.Fatalf("Received an error retrieving public key: %v", err)
 	}
-	if public[0] != 'U' {
-		t.Fatalf("Expected a prefix of 'U' but got %c", public[0])
+	if public[0] != '9' {
+		t.Fatalf("Expected a prefix of '9' but got %c", public[0])
 	}
 	if !IsValidPublicUserKey(public) {
 		t.Fatalf("Not a valid public user key")
@@ -220,8 +220,8 @@ func TestOperator(t *testing.T) {
 	if err != nil {
 		t.Fatalf("Received an error retrieving public key: %v", err)
 	}
-	if public[0] != 'O' {
-		t.Fatalf("Expected a prefix of 'O' but got %c", public[0])
+	if public[0] != '0' {
+		t.Fatalf("Expected a prefix of '0' but got %c", public[0])
 	}
 	if !IsValidPublicOperatorKey(public) {
 		t.Fatalf("Not a valid public cluster key")
@@ -242,8 +242,8 @@ func TestCluster(t *testing.T) {
 	if err != nil {
 		t.Fatalf("Received an error retrieving public key: %v", err)
 	}
-	if public[0] != 'C' {
-		t.Fatalf("Expected a prefix of 'C' but got %c", public[0])
+	if public[0] != 'c' {
+		t.Fatalf("Expected a prefix of 'c' but got %c", public[0])
 	}
 	if !IsValidPublicClusterKey(public) {
 		t.Fatalf("Not a valid public cluster key")
@@ -264,8 +264,8 @@ func TestServer(t *testing.T) {
 	if err != nil {
 		t.Fatalf("Received an error retrieving public key: %v", err)
 	}
-	if public[0] != 'N' {
-		t.Fatalf("Expected a prefix of 'N' but got %c", public[0])
+	if public[0] != 'e' {
+		t.Fatalf("Expected a prefix of 'e' but got %c", public[0])
 	}
 	if !IsValidPublicServerKey(public) {
 		t.Fatalf("Not a valid public server key")
@@ -296,7 +296,7 @@ func TestIsValidPublic(t *testing.T) {
 	user, _ := CreateUser()
 	pub, _ := user.PublicKey()
 	if !IsValidPublicKey(pub) {
-		t.Fatalf("Expected pub to be a valid public key")
+		t.Fatalf("Expected pub to be a valid public key, pub=%s", pub)
 	}
 	seed, _ := user.Seed()
 	if IsValidPublicKey(string(seed)) {
@@ -401,8 +401,8 @@ func TestFromSeed(t *testing.T) {
 		t.Fatalf("Unexpected error retrieving seed: %v", err)
 	}
 	// Make sure the seed starts with SA
-	if !bytes.HasPrefix(seed, []byte("SA")) {
-		t.Fatalf("Expected seed to start with 'SA', go '%s'", seed[:2])
+	if !bytes.HasPrefix(seed, []byte("5a")) {
+		t.Fatalf("Expected seed to start with '5a', go '%s'", seed[:2])
 	}
 
 	account2, err := FromSeed(seed)

@@ -77,11 +77,11 @@ func FromPublicKey(public string) (KeyPair, error) {
 	if err != nil {
 		return nil, err
 	}
-	pre := PrefixByte(raw[0])
+	pre := PrefixByte(public[0])
 	if err := checkValidPublicPrefixByte(pre); err != nil {
 		return nil, ErrInvalidPublicKey
 	}
-	return &pub{pre, raw[1:]}, nil
+	return &pub{pre, raw[:]}, nil
 }
 
 // FromSeed will create a KeyPair capable of signing and verifying signatures.
