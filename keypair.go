@@ -124,6 +124,9 @@ func (pair *kp) Sign(input []byte) ([]byte, error) {
 
 // Verify will verify the input against a signature utilizing the public key.
 func (pair *kp) Verify(input []byte, sig []byte) error {
+	if len(sig) != 64 {
+		return ErrInvalidSignature
+	}
 	pub, _, err := pair.keys()
 	if err != nil {
 		return err

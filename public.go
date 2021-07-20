@@ -54,7 +54,10 @@ func (p *pub) Sign(input []byte) ([]byte, error) {
 
 // Verify will verify the input against a signature utilizing the public key.
 func (p *pub) Verify(input []byte, sig []byte) error {
-	if !secp256k1.VerifySignature(p.pub, crypto.Keccak256(input), sig[:64]) {
+	if len(sig) != 64 {
+		return ErrInvalidSignature
+	}
+	if !secp256k1.VerifySignature(p.pub, crypto.Keccak256(input), sig) {
 		return ErrInvalidSignature
 	}
 	return nil

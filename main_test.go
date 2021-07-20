@@ -418,6 +418,55 @@ func TestFromSeed(t *testing.T) {
 	}
 }
 
+func TestLongSignature(t *testing.T) {
+	account, err := CreateAccount()
+	if err != nil {
+		t.Fatalf("Expected non-nil error on CreateAccount, received %v", err)
+	}
+	if account == nil {
+		t.Fatal("Expect a non-nil account")
+	}
+
+	data := []byte("Hello World")
+	sig, err := account.Sign(data)
+	if err != nil {
+		t.Fatalf("Unexpected error signing from account: %v", err)
+	}
+
+	sig = append(sig, 'A')
+	if err := account.Verify(data, sig); err != ErrInvalidSignature {
+		t.Fatalf("Should be ErrInvalidSignature, but got an unexpected error: %v", err)
+	}
+
+	// Create a User
+	user, err := CreateUser()
+	if err != nil {
+		t.Fatalf("Expected non-nil error on CreateUser, received %v", err)
+	}
+	if user == nil {
+		t.Fatal("Expect a non-nil user")
+	}
+	// Should be able to verify with pubUser.
+	sig, err = user.Sign(data)
+	if err != nil {
+		t.Fatalf("Unexpected error signing from user: %v", err)
+	}
+	// Now create a publickey only KeyPair
+	publicKey, err := user.PublicKey()
+	if err != nil {
+		t.Fatalf("Error retrieving public key from user: %v", err)
+	}
+	pubUser, err := FromPublicKey(publicKey)
+	if err != nil {
+		t.Fatalf("Error creating public key only user: %v", err)
+	}
+	sig = append(sig, 'A')
+	err = pubUser.Verify(data, sig)
+	if err := account.Verify(data, sig); err != ErrInvalidSignature {
+		t.Fatalf("Should be ErrInvalidSignature, but got an unexpected error: %v", err)
+	}
+}
+
 func TestKeyPairFailures(t *testing.T) {
 	var tooshort [8]byte
 	if _, err := EncodeSeed(PrefixByteUser, tooshort[:]); err == nil {
